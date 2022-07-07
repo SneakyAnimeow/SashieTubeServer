@@ -1,0 +1,54 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'application'
+    id 'org.beryx.runtime' version '1.12.7'
+}
+
+group = 'club.anims'
+version = '1.0'
+sourceCompatibility = '17'
+
+mainClassName = 'club.anims.sashietubeserver.SashieTubeServerApplication'
+
+runtime {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    modules = ['java.base','java.desktop','java.instrument','java.management.rmi',
+               'java.naming','java.prefs','java.scripting','java.security.jgss',
+               'java.sql','jdk.httpserver','jdk.unsupported']
+
+    jpackage{
+        imageName = "SashieTube Server"
+        imageOptions = ['--win-console']
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.sealedtx:java-youtube-downloader:3.1.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
