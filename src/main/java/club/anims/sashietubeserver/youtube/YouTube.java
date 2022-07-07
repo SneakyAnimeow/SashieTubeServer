@@ -24,7 +24,7 @@ public abstract class YouTube {
     public static ByteArrayOutputStream download(String videoId){
         var info = getInfo(videoId);
 
-        var format = info.bestVideoFormat();
+        var format = info.bestVideoWithAudioFormat();
 
         var videoDataStream = new ByteArrayOutputStream();
         var request = new RequestVideoStreamDownload(format, videoDataStream);
