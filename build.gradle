@@ -107,6 +107,8 @@ repositories {
 dependencies {
     implementation 'com.github.sealedtx:java-youtube-downloader:3.1.0'
 
+    implementation 'org.slf4j:slf4j-simple:2.0.0-alpha7'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

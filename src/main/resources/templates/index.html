@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Player</title>
+</head>
+<body>
+    <input type="text" id="video-url" placeholder="Enter video url code">
+    <button id="play-video" onclick="onPlay()">Play</button>
+    <br>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var videoName = /*[[${videoName}]]*/ '';
+        /*]]>*/
+        if(videoName !== 'NULL') {
+            var video = document.createElement('video');
+            video.width = 720;
+            video.height = 480;
+            video.controls = true;
+            video.preload = 'auto';
+            video.src = `/stream?v=${videoName}`
+            document.body.appendChild(video);
+        }
+    </script>
+
+    <script>
+        const onPlay = () => {
+            window.location.href = `/?v=${document.getElementById('video-url').value}`;
+        }
+    </script>
+</body>
+</html>
