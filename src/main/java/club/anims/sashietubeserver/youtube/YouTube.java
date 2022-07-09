@@ -21,7 +21,7 @@ public abstract class YouTube {
 
     private static final long PERIOD = 1000 * 60;
 
-    private static final long EXPIRATION_TIME = PERIOD * 1;
+    private static final long EXPIRATION_TIME = PERIOD * 60 * 12;
 
     private static final File VIDEOS_DIR = new File("videos");
 
