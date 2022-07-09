@@ -4,25 +4,26 @@ import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.downloader.request.RequestVideoFileDownload;
 import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
 import com.github.kiulian.downloader.model.videos.VideoInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public abstract class YouTube {
+    private static final Logger LOGGER = LoggerFactory.getLogger(YouTube.class);
+
     private static final YoutubeDownloader DOWNLOADER = new YoutubeDownloader();
 
     private static final Timer TIMER = new Timer();
 
     private static final HashMap<String, Long> VIDEO_EXPIRATION_TIMES = new HashMap<>();
 
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 2;
+    private static final long PERIOD = 1000 * 60;
+
+    private static final long EXPIRATION_TIME = PERIOD * 1;
 
     private static final File VIDEOS_DIR = new File("videos");
-
-    private static final long PERIOD = 1000 * 60;
 
     static {
         if(!VIDEOS_DIR.exists()) {
@@ -34,14 +35,18 @@ public abstract class YouTube {
         TIMER.schedule(new TimerTask() {
             @Override
             public void run() {
-                for(var videoEntry : VIDEO_EXPIRATION_TIMES.entrySet()) {
-                    videoEntry.setValue(videoEntry.getValue() - PERIOD);
+                VIDEO_EXPIRATION_TIMES.entrySet().forEach(videoEntry -> videoEntry.setValue(videoEntry.getValue() - PERIOD));
 
-                    if(videoEntry.getValue() <= 0) {
-                        new File(VIDEOS_DIR, videoEntry.getKey()+".mp4").delete();
-                        VIDEO_EXPIRATION_TIMES.remove(videoEntry.getKey());
+                var expiredVideos = VIDEO_EXPIRATION_TIMES.entrySet().stream().filter(entry -> entry.getValue() <= 0).map(Map.Entry::getKey).toList();
+                expiredVideos.forEach(video -> {
+                    var videoFile = new File(VIDEOS_DIR, video+".mp4");
+                    if(videoFile.exists()) {
+                        videoFile.delete();
+                        LOGGER.info("Deleted video due to expiration date: {}", video+".mp4");
                     }
-                }
+
+                    VIDEO_EXPIRATION_TIMES.remove(video);
+                });
             }
         }, 0L, PERIOD);
     }
